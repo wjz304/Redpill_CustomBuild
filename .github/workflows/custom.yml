@@ -149,8 +149,11 @@ jobs:
               errinfo = ''
               warinfo = ''
 
+              repository = ''
               platform = ''
               version = ''
+              lkm = ''
+
               config = ''
 
               maxdisks = ''
@@ -169,8 +172,7 @@ jobs:
 
               dtb = ''
               ext = ''
-              exp = 'pocopico'
-              jun = '0'
+
               dev = '0'
 
               try:
@@ -193,8 +195,11 @@ jobs:
                       errinfo = 'body 错误, body is null'
                   else:
                       # l = lambda x: x.strip() if isinstance(x, str) else str(x)
+                      if 'repository' in body: repository = body['repository'].strip()
                       if 'platform' in body: platform = body['platform'].strip()
                       if 'version' in body: version = body['version'].strip()
+                      if 'lkm' in body: lkm = body['lkm'].strip()
+
                       if 'config' in body: config = body['config'] #l(body['config']).strip()
                       
                       if 'maxdisks' in body: maxdisks = body['maxdisks'].strip()
@@ -213,23 +218,42 @@ jobs:
 
                       if 'dtb' in body: dtb = body['dtb'].strip()
                       if 'ext' in body: ext = body['ext'].strip()
-                      if 'exp' in body: exp = body['exp'].strip()
-                      if 'jun' in body: jun = body['jun'].strip()
                       if 'dev' in body: dev = body['dev'].strip()
 
               except Exception as e:
                   iscustom = 'false'
                   errinfo = 'body 错误, 不符合JSON规范 {}.'.format(e)
 
-              platforms = ['DS918+', 'DS920+', 'DS923+', 'DS1520+', 'DS1621+', 'DS1821+', 'DS2422+', 'DS3615xs', 'DS3617xs', 'DS3622xs+', 'DVA1622', 'DVA3221', 'FS2500', 'FS3600', 'RS4021xs+']
-              if iscustom == 'true' and not platform in platforms:
-                  iscustom = 'false'
-                  errinfo = 'platform 参数错误, 当前仅支持 {}.'.format(', '.join(platforms))
+              loads = {}
+              with open('loads.json', mode="r") as f:
+                  loads = json.loads(f.read())
 
-              versions = ['7.1.1-42962', '7.1.0-42661', '7.0.1-42218', '6.2.4-25556']
-              if iscustom == 'true' and not version in versions:
+              repositorys = loads.keys()
+              if iscustom == 'true' and not repository in repositorys:
                   iscustom = 'false'
-                  errinfo = 'version 参数错误, 当前仅支持 {}.'.format(', '.join(versions))
+                  errinfo = 'repository 参数错误, 当前仅支持 {}.'.format(', '.join(repositorys))
+
+              if iscustom == 'true':
+                  platforms = loads[repository].keys()
+                  if not platform in platforms:
+                      iscustom = 'false'
+                      errinfo = 'platform 参数错误, 当前仅支持 {}.'.format(', '.join(platforms))
+
+              if iscustom == 'true':
+                  versions = loads[repository][platform]
+                  if not version in versions:
+                      iscustom = 'false'
+                      errinfo = 'version 参数错误, 当前仅支持 {}.'.format(', '.join(versions))
+
+              if iscustom == 'true':
+                  lkms = {}
+                  with open('lkms.json', mode="r") as f:
+                      keys = json.loads(f.read())['wjz304'][platform.replace('+', 'p').lower() + '_' + version.split('-')[-1]].keys()
+                      lkms = [x for x in keys if not x.endswith('*') and not x.endswith('#')]
+                  
+                  if not lkm in lkms:
+                      iscustom = 'false'
+                      errinfo = 'lkm 参数错误, 当前仅支持 {}.'.format(', '.join(lkms))
 
               if config != '':
                   try:
@@ -427,7 +451,7 @@ jobs:
                   ext = ''
                   while True:
                       if len(extdels) > 0:
-                          rpDels = ['-boot-wait', '-acpid2', '-misc', '-virtio']
+                          rpDels = ['-boot-wait', '-acpid2', '-misc', '-virtio', '-dtb']
                           extc = [x for x in extdels if x not in rpDels]
                           if len(extc) > 0:
                               iscustom = 'false'
@@ -469,14 +493,6 @@ jobs:
                           errinfo = 'ext 参数错误. 无效的name, 无效的链接.'
                       break
 
-              if iscustom == 'true' and not exp in ['pocopico', 'jumkey']:
-                  iscustom = 'false'
-                  errinfo = 'exp 参数错误, 当前仅支持 pocopico, jumkey.'
-
-              if iscustom == 'true' and not jun in ['0', '1']:
-                  iscustom = 'false'
-                  errinfo = 'jun 参数错误, 当前仅支持 "0", "1".'
-
               if iscustom == 'true' and not dev in ['0', '1']:
                   dev = '0'
 
@@ -485,8 +501,11 @@ jobs:
               set_output('errinfo', errinfo)
               set_output('warinfo', warinfo)
 
+              set_output('repository', repository)
               set_output('platform', platform)
               set_output('version', version)
+              set_output('lkm', lkm)
+
               set_output('config', config)
               set_output('maxdisks', maxdisks)
               set_output('maxlanport', maxlanport)
@@ -503,8 +522,6 @@ jobs:
               set_output('sasidxmap', sasidxmap)
               set_output('dtb', dtb)
               set_output('ext', ext)
-              set_output('exp', exp)
-              set_output('jun', jun)
               set_output('dev', dev)
 
       - name: Echo Build Info
@@ -514,8 +531,11 @@ jobs:
           echo errinfo:           '${{ env.errinfo }}'
           echo warinfo:           '${{ env.warinfo }}'
 
+          echo repository:        '${{ env.repository }}'
           echo platform:          '${{ env.platform }}'
           echo version:           '${{ env.version }}'
+          echo lkm:               '${{ env.lkm }}'
+
           echo config:            '${{ env.config }}'
 
           echo maxdisks:          '${{ env.maxdisks }}'
@@ -533,8 +553,6 @@ jobs:
           echo sasidxmap:         '${{ env.sasidxmap }}'
           echo dtb:               '${{ env.dtb }}'
           echo ext:               '${{ env.ext }}'
-          echo exp:               '${{ env.exp }}'
-          echo jun:               '${{ env.jun }}'
           echo dev:               '${{ env.dev }}'
 
       - name: Add Issues labels
@@ -716,20 +734,22 @@ jobs:
         if: env.iscustom == 'true' && success()
         run: |
           function exdsmpat() {
+            platform=$1
+            version=$2
+
+            synoplatform=$(echo ${platform,,} | sed 's/+/p/g')                             # DS3622xs+ => ds3622xsp
+            synoversion=$(echo ${version} | awk -F - '{print $2}')                         # 7.0.1-42218 => 42218
+            
+            configfile=./config/${platform}/${version}/config.json
+            paturl=$(cat ${configfile} | jq '.os .pat_url' | sed -s 's/"//g')
+
             pwd
             cd ./cache
-            path=7.0.1/42218
-            if [ "$2" == "42661" ]; then
-              path=7.1/42661-1
-            fi
-            if [ "$2" == "42962" ]; then
-              path=7.1.1/42962
-            fi
-            curl -L https://global.download.synology.com/download/DSM/release/${path}/DSM_$1_$2.pat -o ds.pat
-            if [ "$1" == "DVA1622" -o "$1" == "DS923%2B" ]; then
+            curl -L ${paturl} -o ds.pat
+            if [ "${platform}" == "DVA1622" -o "${platform}" == "DS923+" ]; then
               curl -L https://global.download.synology.com/download/DSM/release/7.0.1/42218/DSM_DS3622xs%2B_42218.pat -o oldpat.tar.gz
             else
-              curl -L https://global.download.synology.com/download/DSM/release/7.0.1/42218/DSM_$1_42218.pat -o oldpat.tar.gz
+              curl -L https://global.download.synology.com/download/DSM/release/7.0.1/42218/DSM_${platform/+/%2B}_42218.pat -o oldpat.tar.gz
             fi
             mkdir synoesp && tar -C./synoesp/ -xf oldpat.tar.gz rd.gz
             cd synoesp
@@ -741,17 +761,21 @@ jobs:
             cd ..
             mkdir pat
             sudo LD_LIBRARY_PATH=synoesp/extract synoesp/extract/syno_extract_system_patch ds.pat pat || echo "extract latest pat"
-            tar -czvf $3 -C ./pat/ . --warning=no-file-changed
+            tar -czvf ${synoplatform}_${synoversion}.pat -C ./pat/ . --warning=no-file-changed
             ls -al
             sha256zImage=$(sha256sum ./pat/zImage | awk '{print $1}')
             sha256ramdisk=$(sha256sum ./pat/rd.gz | awk '{print $1}')
             echo sha256zImage: ${sha256zImage} sha256ramdisk: ${sha256ramdisk}
             sudo rm -rf ds.pat oldpat.tar.gz synoesp pat
             ls -al
-            sha256newpat=$(sha256sum $3 | awk '{print $1}')
+            sha256newpat=$(sha256sum ${synoplatform}_${synoversion}.pat | awk '{print $1}')
             echo sha256newpat: ${sha256newpat}
             cd ..
             pwd
+
+            jq -r .os.sha256 ${configfile}
+            sed -i "s/$(jq -r .os.sha256 ${configfile})/${sha256newpat}/g" ${configfile}
+            jq -r .os.sha256 ${configfile}
           }
 
           function setsynoarch() {
@@ -811,15 +835,17 @@ jobs:
 
           # 开始表演
           echo "============================编译开始============================"
-          repo=${{ env.exp }}
-          branch=develop
+          repository=${{ env.repository }}
+          repo=$(echo ${repository} | awk -F'_' '{print $1}')
+          branch=$(echo ${repository} | awk -F'_' '{print $2}')
+          lkm=${{ env.lkm }}
+
           bArgs=''
-          if [ ${{ env.jun }} == '1' ]; then 
+          if [ ${repository} != 'pocopico_develop' ]; then 
             bArgs='BRP_JUN_MOD=1 BRP_DEBUG=1'
-            if [ ${repo} == 'pocopico' ]; then 
-              branch=jun
-            fi
           fi
+
+          lkmext=https://raw.githubusercontent.com/wjz304/rp-ext/master
           rpext=https://raw.githubusercontent.com/pocopico/rp-ext/master
           loadext=https://raw.githubusercontent.com/${repo}/redpill-load/${branch}
           if [ ${{ env.dev }} == '1' ]; then 
@@ -835,31 +861,9 @@ jobs:
           if [ ${repo} == 'pocopico' -a ${branch} == 'develop' ]; then 
             # cd redpill-load && git reset --hard d810a64a33fdc84287ab68e2d5919763c725ebeb && cd ..
 
-            cp -r redpill-load/config/DS1621+ redpill-load/config/DS1821+
-            #find redpill-load/config/DS1821+ -type d -name '*1621*' -execdir rename 's/1621p/1821p/' '{}' +
-            find redpill-load/config/DS1821+ -type f -name '*1621*' -exec rename 's/1621p/1821p/' '{}' +
-            sed -i 's/DS1621+/DS1821+/g; s/DS1621%2B/DS1821%2B/g; s/1621p/1821p/g' `find redpill-load/config/DS1821+ -type f -name '*config.json'`
-            sed -i 's/19f56827ba8bf0397d42cd1d6f83c447f092c2c1bbb70d8a2ad3fbd427e866df/9a8e2faefac25b5e4dc62eb02b43cb95ee3a44d14e228fef7122ae81b0ca699c/g' redpill-load/config/DS1821+/7.0.1-42218/config.json
-            sed -i 's/f4648d0dd6b29ef6149b0ff46afe1fe32f81730aa79af72f37ffd3647c76f586/f4648d0dd6b29ef6149b0ff46afe1fe32f81730aa79af72f37ffd3647c76f586/g' redpill-load/config/DS1821+/7.0.1-42218/config.json
-            sed -i 's/73512c7bceb34cf7f7f93c2703db60496da0e27274fc45e5aefa0366c9734d6e/10ecb6b63cd4d628a34c29acafcbe6cd7180c72087af39239482f48f578c2620/g' redpill-load/config/DS1821+/7.0.1-42218/config.json
-            sed -i 's/8fd5eb40fb088af97d3beee85b6275c2ceb368b08453eb5a5d00d42cc7d578d1/0f0fcca91e23d575984a4783781f4ceab3df469e2a28c830be292dad97773cb2/g' redpill-load/config/DS1821+/7.1.0-42661/config.json
-            sed -i 's/7a900e3017b4ee09b792d2ed291b7229476ae3e583fe559bbd9baaa812705aa0/faa86b13eab055eacdb85e3fa74d674fd956439d8b6027c75647d9d1873f8f12/g' redpill-load/config/DS1821+/7.1.1-42962/config.json
-            
-
             #find redpill-load/config/DS3622xs+ -type d -name '*3622xs*' -execdir rename 's/3622xs\+/3622xsp/' '{}' +
             find redpill-load/config/DS3622xs+ -type f -name '*3622xs*' -exec rename 's/-3622xs\+/-3622xsp/' '{}' +
             sed -i 's/DS3622xs /DS3622xs+ /g; s/-3622xs+/-3622xsp/g' `find redpill-load/config/DS3622xs+ -type f -name '*config.json'`
-
-            cp -r redpill-load/config/DS3622xs+ redpill-load/config/FS3600
-            #find redpill-load/config/FS3600 -type d -name '*3622xs*' -execdir rename 's/3622xsp/fs3600/' '{}' +
-            find redpill-load/config/FS3600 -type f -name '*3622xs*' -exec rename 's/3622xsp/fs3600/' '{}' +
-            sed -i 's/DS3622xs+/FS3600/g; s/DS3622xs%2B/FS3600/g; s/ds3622xsp/fs3600/g; s/3622xsp/fs3600/g' `find redpill-load/config/FS3600 -type f -name '*config.json'`
-            sed -i 's/f38329b8cdc5824a8f01fb1e377d3b1b6bd23da365142a01e2158beff5b8a424/a6ff25bc45a05eb880a0872c5408a5a744b16834385eab8df28ce25cf76ef12e/g' redpill-load/config/FS3600/7.0.1-42218/config.json
-            sed -i 's/a95d4ab06189460f3b3d13a33e421887b5f3ea09a10535ae0d4c92beb7ff631d/8f0830256f78ddd2d3ae90f14cbf6bab3048e3ffa05e2241a3d4561db7020aed/g' redpill-load/config/FS3600/7.0.1-42218/config.json
-            sed -i 's/06964b68e5ccdedd4363dff3986f99686d3c9cb5225e8e4c3d840a1d9cd1330b/17607e1739c8acc9903272ebd981bccb27b51057cdcb3cc446e5c5149db452d3/g' redpill-load/config/FS3600/7.0.1-42218/config.json
-            sed -i 's/df8a055d6bc901229f0ba53ed5b4fe024bdf9a1b42f0c32483adefcdac14db4d/228884172ce53110f664066248c9b83597431aedebfb5384a081181833fbccd1/g' redpill-load/config/FS3600/7.1.0-42661/config.json
-            sed -i 's/432f315818adad4e1ca54040557e164caf2937004e2d009aac8865391353e2f6/701b96f5d0848fa34a13b5112086ed80641afe764f420ae43a09bf5a4f1d736a/g' redpill-load/config/FS3600/7.1.1-42962/config.json
-
           fi
 
           cp user_config.json redpill-load/user_config.json
@@ -874,26 +878,21 @@ jobs:
           # 7.1 解密PAT
           echo "===========================7.1 解密PAT=========================="
           if [[ "${version}" > "7.0.1-42218" ]]; then 
-            newpat=${synoplatform}_${synoversion}.pat
-            exdsmpat ${platform/+/%2B} ${synoversion} ${newpat}
-            ls -al ./cache
-            configfile=./config/${platform}/${version}/config.json
-            jq -r .os.sha256 ${configfile}
-            sed -i "s/$(jq -r .os.sha256 ${configfile})/$(sha256sum ./cache/${newpat} | awk '{print $1}')/g" ${configfile}
-            jq -r .os.sha256 ${configfile}
+            exdsmpat ${platform} ${version}
           fi
 
           # 添加必备驱动
           echo "===========================添加必备驱动=========================="
           echo -e '{\n    "thethorgroup.boot-wait": "https://raw.githubusercontent.com/wjz304/rp-ext/master/redpill-boot-wait/rpext-index.json"\n}' > bundled-exts.json
-          [ "$(curl -s --location ${loadext}/redpill-boot-wait/rpext-index.json | jq -r .releases.${synoplatform}_${synoversion})" != "null" ] && ./ext-manager.sh add ${loadext}/redpill-boot-wait/rpext-index.json
-          [ "$(curl -s --location ${loadext}/redpill-acpid/rpext-index.json | jq -r .releases.${synoplatform}_${synoversion})" != "null" ] && ./ext-manager.sh add ${loadext}/redpill-acpid/rpext-index.json
-          [ "$(curl -s --location ${loadext}/redpill-misc/rpext-index.json | jq -r .releases.${synoplatform}_${synoversion})" != "null" ] && ./ext-manager.sh add ${loadext}/redpill-misc/rpext-index.json
-          [ "$(curl -s --location ${loadext}/redpill-virtio/rpext-index.json | jq -r .releases.${synoplatform}_${synoversion})" != "null" ] && ./ext-manager.sh add ${loadext}/redpill-virtio/rpext-index.json
+
+          [ -f ./redpill-boot-wait/rpext-index.json -a "$(curl -s --location ${loadext}/redpill-boot-wait/rpext-index.json | jq -r .releases.${synoplatform}_${synoversion})" != "null" ] && ./ext-manager.sh add ${loadext}/redpill-boot-wait/rpext-index.json
+          [ -f ./redpill-acpid/rpext-index.json -a "$(curl -s --location ${loadext}/redpill-acpid/rpext-index.json | jq -r .releases.${synoplatform}_${synoversion})" != "null" ] && ./ext-manager.sh add ${loadext}/redpill-acpid/rpext-index.json
+          [ -f ./redpill-misc/rpext-index.json -a "$(curl -s --location ${loadext}/redpill-misc/rpext-index.json | jq -r .releases.${synoplatform}_${synoversion})" != "null" ] && ./ext-manager.sh add ${loadext}/redpill-misc/rpext-index.json
+          [ -f ./redpill-virtio/rpext-index.json -a "$(curl -s --location ${loadext}/redpill-virtio/rpext-index.json | jq -r .releases.${synoplatform}_${synoversion})" != "null" ] && ./ext-manager.sh add ${loadext}/redpill-virtio/rpext-index.json
 
           # redpill.ko 方式一 
           echo "=======================Download redpill.ko======================"
-          extension=$(curl -s --location "${rpext}/redpill/rpext-index.json")
+          extension=$(curl -s --location "${lkmext}/${lkm}/rpext-index.json")
           redpilltgz=$(curl -s --location "$(echo ${extension} | jq -r .releases.${synoplatform}_${synoversion})" | jq -r '.files[] .url')
           [ "$(echo $redpilltgz | awk '{print $NF}')" != "$redpilltgz" ] && redpilltgz=$(echo $redpilltgz | awk '{print $1}')
           wget ${redpilltgz}
@@ -919,16 +918,16 @@ jobs:
             if [ "${item}" == "${platform}" ]; then
               if [ -z "${{ env.dtb }}" ]; then
                 echo "========================Add redpill-dtb========================="
-                ./ext-manager.sh add https://raw.githubusercontent.com/wjz304/rp-ext/master/redpill-dtb/rpext-index.json
+                ./ext-manager.sh add ${lkmext}/redpill-dtb/rpext-index.json
                 ./ext-manager.sh _update_platform_exts ${synoplatform}_${synoversion} pocopico.dtb
               # 仅本地可用 
               # elif [ "${{ env.dtb }}" == "auto" ]; then
               #   echo "==========================Add dtbpatch=========================="
-              #   ./ext-manager.sh add https://raw.githubusercontent.com/wjz304/rp-ext/master/dtbpatch/rpext-index.json
+              #   ./ext-manager.sh add ${lkmext}/dtbpatch/rpext-index.json
               #   ./ext-manager.sh _update_platform_exts ${synoplatform}_${synoversion} dtbpatch
               else
                 echo "=====================Add redpill-dtb-static====================="
-                ./ext-manager.sh add https://raw.githubusercontent.com/wjz304/rp-ext/master/redpill-dtb-static/rpext-index.json
+                ./ext-manager.sh add ${lkmext}/redpill-dtb-static/rpext-index.json
                 ./ext-manager.sh _update_platform_exts ${synoplatform}_${synoversion} redpill-dtb-static
                 dtbuserfile="${{ env.dtb }}"
                 dtbextfile="$(find custom -name model_${synoplatform}.dtb)"
@@ -997,7 +996,7 @@ jobs:
           else
             echo "### ${{ github.triggering_actor }}'s Redpill Custom" >> $GITHUB_STEP_SUMMARY
             echo "👉 "platform": "${{ env.platform }}"  " >> $GITHUB_STEP_SUMMARY
-            echo "👉 "version": "${{ env.version }}", "jun": "${{ env.jun }}"  " >> $GITHUB_STEP_SUMMARY
+            echo "👉 "version": "${{ env.version }}"  " >> $GITHUB_STEP_SUMMARY
             echo "👉 "ext": "${{ env.ext }}"  " >> $GITHUB_STEP_SUMMARY
           fi
 
@@ -1014,24 +1013,10 @@ jobs:
           else
             echo -e "BOOT:\n${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" >> redpill-load/body#actions.txt
           fi
-          function getpaturl() {
-            case $1 in
-            6.2.4-25556)
-                paturl=https://global.download.synology.com/download/DSM/release/6.2.4/25556/DSM_$2_25556.pat
-                ;;
-            7.0.1-42218)
-                paturl=https://global.download.synology.com/download/DSM/release/7.0.1/42218/DSM_$2_42218.pat
-                ;;
-            7.1.0-42661)
-                paturl=https://global.download.synology.com/download/DSM/release/7.1/42661-1/DSM_$2_42661.pat
-                ;;
-            7.1.1-42962)
-                paturl=https://global.download.synology.com/download/DSM/release/7.1.1/42962/DSM_$2_42962.pat
-                ;;
-            esac
-          }
-          getpaturl ${{ env.version }} ${{ env.platform }}
-          paturl=${paturl/+/%2B}
+
+          configfile=./redpill-load/config/${{ env.platform }}/${{ env.version }}/config.json
+          paturl=$(cat ${configfile} | jq '.os .pat_url' | sed -s 's/"//g')
+
           echo -e "\nPAT:\n${paturl}" >> redpill-load/body#${{ env.issuenumber }}.txt
 
       - name: Upload to Artifacts

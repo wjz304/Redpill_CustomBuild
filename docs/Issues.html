@@ -5,7 +5,6 @@
   data-light-theme="light"
   data-dark-theme="dark"
   data-a11y-animated-images="system"
-  style="filter: progid:DXImageTransform.Microsoft.BasicImage(grayscale=1);-webkit-filter: grayscale(100%);"
 >
   <head>
     <meta charset="utf-8" />
@@ -58,6 +57,10 @@
       var repo = "wjz304/Redpill_CustomBuild";
       var dev = "0";
       var cdn = "";
+
+      var _loads = {};
+      var _exts = {};
+      var _lkms = {};
 
       repo = getRepo(repo);
       dev = getUrlParam("dev");
@@ -115,9 +118,7 @@
         setTitle();
         setTips();
         $("#titleLabel").on("click", changemode);
-        httpGetAsync(
-          cdn + "parameter.json" + "?" + Math.random(),
-          function (result) {
+        httpGetAsync(cdn + "parameter.json" + "?" + Math.random(), function (result) {
             result = JSON.parse(result);
             $("#inputs").find("div").remove(); //html('');
             var html = "";
@@ -127,8 +128,20 @@
             }
             $("#inputs").prepend(html);
 
+            $("#repository").on("change", changeRepository);
             $("#platform").on("change", changePlatform);
-            changePlatform();
+            $("#version").on("change", changeVersion);
+
+            httpGetAsync(cdn + "loads.json" + "?" + Math.random(), function (result) {
+              _loads = JSON.parse(result);
+              httpGetAsync(cdn + "exts.json" + "?" + Math.random(), function (result) {
+                _exts = JSON.parse(result);
+                httpGetAsync(cdn + "lkms.json" + "?" + Math.random(), function (result) {
+                  _lkms = JSON.parse(result);
+                  changeRepository();
+                });
+              });
+            });
           }
         );
       };
@@ -207,62 +220,84 @@
         return html;
       }
 
-      function changePlatform() {
-        httpGetAsync(cdn + "loads.json" + "?" + Math.random(), function (result) {
-          result = JSON.parse(result);
-          var xreleases = result["pocopico_develop"][$("#platform").val()];
-          var isselect = false;
-          for (var i = 0; i < $("#version")[0].options.length; i++) {
-            if (xreleases.includes($("#version")[0].options[i].value)) {
-              $("#version")[0].options[i].style.display = "block";
-              if (!isselect) {
-                $("#version")[0].options[i].selected = true;
-                isselect = true;
+      function changeRepository() {
+        repository = $("#repository").val();
+        var xreleases = Object.keys(_loads[repository]).sort();
+        $("#platform")[0].options.length = 0;
+        for (var i in xreleases) {
+          var isFind = false;
+          var keys = Object.keys(_lkms["wjz304"]);
+          for (var key in keys) {
+            if (keys[key].startsWith(xreleases[i].replace("+", "p").toLowerCase())) {
+              var lkms = Object.keys(_lkms["wjz304"][keys[key]]);
+              for (lkm in lkms) {
+                if (lkms[lkm].endsWith("*") || lkms[lkm].endsWith("#")) {
+                  continue;
+                }
+                isFind = true;
+                break;
               }
-            } else {
-              $("#version")[0].options[i].style.display = "none";
             }
+            if (isFind == true) break;
           }
-          $("#version").on("change", changeversion);
-          changeversion();
-        });
+          if (isFind == true)
+            $("#platform")[0].options.add(new Option(xreleases[i], xreleases[i]));
+        }
+        changePlatform();
       }
 
-      function changeversion() {
-        httpGetAsync(cdn + "loads.json" + "?" + Math.random(), function (result) {
-          result = JSON.parse(result);
-          var xreleases = result["jumkey_develop"][$("#platform").val()];
-          var isselect = false;
+      function changePlatform() {
+        repository = $("#repository").val();
+        platform = $("#platform").val();
 
-          for (var i = 0; i < $("#exp")[0].options.length; i++) {
-            if ($("#exp")[0].options[i].value == "jumkey") {
-              if (
-                result["jumkey_develop"].hasOwnProperty($("#platform").val()) &&
-                result["jumkey_develop"][$("#platform").val()].includes(
-                  $("#version").val()
-                )
-              ) {
-                $("#exp")[0].options[i].style.display = "block";
-                $("#exp")[0].options[i].selected = true;
-              } else {
-                $("#exp")[0].options[i].style.display = "none";
-                $("#exp")[0].options[i].selected = false;
+        var xreleases = _loads[repository][platform].reverse();
+        $("#version")[0].options.length = 0;
+        for (var i in xreleases) { 
+          var isFind = false;
+          var keys = Object.keys(_lkms["wjz304"]);
+          for (var key in keys) {
+            if (keys[key].startsWith(platform.replace("+", "p").toLowerCase()) && keys[key].endsWith(xreleases[i].split("-")[1])) {
+              var lkms = Object.keys(_lkms["wjz304"][keys[key]]);
+              for (lkm in lkms) {
+                if (lkms[lkm].endsWith("*") || lkms[lkm].endsWith("#")) {
+                  continue;
+                }
+                isFind = true;
+                break;
               }
             }
+            if (isFind == true) break;
           }
-          for (var i in $("#jun")[0].options) {
-            if ($("#jun")[0].options[i].value == "1") {
-              if (["7.0.1-42218"].includes($("#version").val())) {
-                $("#jun")[0].options[i].style.display = "block";
-                $("#jun")[0].options[i].selected = true;
-              } else {
-                $("#jun")[0].options[i].style.display = "none";
-                $("#jun")[0].options[i].selected = false;
+          if (isFind == true)
+            $("#version")[0].options.add(new Option(xreleases[i], xreleases[i]));
+        }
+        changeVersion();
+      }
+
+      function changeVersion() {
+        changeLkm();
+        createExtBtn();
+      }
+
+      function changeLkm() {
+        repository = $("#repository").val();
+        platform = $("#platform").val().replace("+", "p").toLowerCase();
+        version = $("#version").val().split("-")[1];
+
+        var keys = Object.keys(_lkms["wjz304"]);
+        $("#lkm")[0].options.length = 0;
+        for (var key in keys) {
+          if (keys[key].startsWith(platform) && keys[key].endsWith(version)) {
+            var lkms = Object.keys(_lkms["wjz304"][keys[key]]);
+            for (lkm in lkms) {
+              if (lkms[lkm].endsWith("*") || lkms[lkm].endsWith("#")) {
+                continue;
               }
+              $("#lkm")[0].options.add(new Option(lkms[lkm], lkms[lkm]));
             }
+            break;
           }
-          createExtBtn();
-        });
+        }
       }
 
       function createExtBtn() {
@@ -280,6 +315,8 @@
           if (Object.keys(exts).length > 0) {
             html +=
               '<span class="pl-mi1">点击驱动名添加/删除 (* 结尾的为无效驱动, # 结尾的为sha256错误驱动, */# 强制添加将编译失败.) </span><br />';
+            html +=
+              '<button type="button" class="btn btn-primary btn-sm mt-2" id="ext_btn_-dtb" onclick="return processext(\'-dtb\')" autofocus="" title="1111111111">-dtb</button>&nbsp;';
             html +=
               '<button type="button" class="btn btn-primary btn-sm mt-2" id="ext_btn_-virtio" onclick="return processext(\'-virtio\')" autofocus="" title="Adds VirtIO support for fast network/PCI/SCSI/network/console paravirtualization under QEmu (Proxmox, VirtualBox, virsh, and similar)">-virtio</button>&nbsp;';
             html +=

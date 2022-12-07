@@ -4,12 +4,13 @@
 
 ## 介绍  
 [Redpill_CustomBuild](https://github.com/wjz304/Redpill_CustomBuild)  
+[Redpill_CustomBuild_v1](https://github.com/wjz304/Redpill_CustomBuild_v1)(old)  
 一个自定义配置及驱动并通过 Github Action 编译 DSM redpill 引导的平台.  
 本库并没有实际的技术创新, 仅做了一个参数适配, 使一些定制更简单, 并把过程搬到线上, 依赖微软强大的服务器使其快速得到想要的引导文件.  
 高度依赖以下大佬的项目, 请给以下各位大佬点赞.
 >源码仓库： [@RedPill-TTG](https://github.com/RedPill-TTG/redpill-load)  
->编译来源： [@pocopico](https://github.com/pocopico/redpill-load) [@jumkey](https://github.com/jumkey/redpill-load)  
->驱动来源： [@pocopico](https://github.com/pocopico/rp-ext)  
+>编译来源： [@pocopico](https://github.com/pocopico/redpill-load) [@jumkey](https://github.com/jumkey/redpill-load) [@PeterSuh-Q3](https://github.com/PeterSuh-Q3/redpill-load) [@fbelavenuto](https://github.com/fbelavenuto/arpl)  
+>驱动来源： [@pocopico](https://github.com/pocopico/rp-ext) [@jim3ma](https://github.com/jim3ma/synology-igc) [@fbelavenuto](https://github.com/fbelavenuto/r8125)  
 
 在此, 再次, 声明!!!  
 本人只是按照通用编译流程整合各位大佬的redpill-load 进行编译. 我只是解决编译的问题, 任何引导内部问题我都解决不了(当然知道的问题肯定会协助大家解决).  
@@ -38,8 +39,10 @@
 
 参数             | 必选 |     默认值     | 说明  
 -----------------|------|----------------|---------  
-platform         | √    |"DS3622xs+"     | 请选择你需要编译的型号. "DS918+", "DS920+", "DS923+", "DS1520+", "DS1621+", "DS2422+", "DS3615xs", "DS3617xs", "DS3622xs+", "DVA1622", "DVA3221", "FS2500", "RS4021xs+"  
-version          | √    |"7.0.1-42218"   | 请选择你需要编译的版本. "7.1.1-42962", "7.1.0-42661", "7.0.1-42218", "6.2.4-25556"  
+repository       | √    |-               | 请选择编译依赖的基础库. "pocopico_develop", "pocopico_jun", "jumkey_develop", "PeterSuh-Q3_master"  
+platform         | √    |-               | 请选择你需要编译的型号. (具体包含型号以基础库支持为准)  
+version          | √    |-               | 请选择你需要编译的版本. (具体包含版本以基础库支持为准)  
+lkm              | ×    |-               | 如不了解请保持默认, 请选择 LKM 版本.(目前具体有何区别不详, 如无必要选默认的 redpill).  
 config           | ×    |-               | 如不了解请保持默认, 设置默认 user_config.json <sup>[①]()</sup>
 maxdisks         | ×    |-               | 如不了解请保持默认, 请输入最大硬盘数 maxdisks. 默认: 无, 范围: 1~32  
 maxlanport       | ×    |7               | 如不了解请保持默认, 请输入最大网卡索引 maxlanport. 默认: 7, 范围: 0~31  
@@ -56,8 +59,6 @@ sataportmap      | ×    |-               | 请输入SATA控制器盘数 SataPor
 sasidxmap        | ×    |-               | 请输入SAS控制器盘数 SasIdxMap. <sup>[④]()</sup> DS920+, DS923+, DS1520+, DS1621+, DS2422+, DVA1622 不需要填写. 默认: 无  
 dtb              | ×    |-               | 请输入dtb 文件的下载链接(支持的文件类型: .dts,.dtb,.tar.gz,.zip), 仅 DS920+, DS923+, DS1520+, DS1621+, DS2422+, DVA1622 需要填写, 其他型号请勿填写. [#47](https://github.com/wjz304/Redpill_CustomBuild/issues/47)  
 ext              | ×    |-               | 请输入需要集成的扩展, 多个请以 "," 间隔. 支持名字（pocopico库）或者链接，名字参考[exts.json](./exts.json). eg: "r8125, tg3" 
-exp              | ×    |"pocopico"      | 请选择编译依赖的基础库. "pocopico", "jumkey"  
-jun              | ×    |"0"             | 仅7.0.1-42218 版本可以选择jun模式，jun模式 支持 7.0.1~7.1.1 的 DSM.  
 \-               | ×    |-               | 高级自定义 <sup>[③]()</sup>  
 
 ```
@@ -89,15 +90,14 @@ jun              | ×    |"0"             | 仅7.0.1-42218 版本可以选择jun
 ## 举例
 * 普通参数示例:
   - {"platform":"DS3622xs+", "version":"7.0.1-42218", "ext":"r8125, tg3"}  
-  - {"platform":"DS3622xs+", "version":"7.0.1-42218", "exp": "jumkey", "jun":"1", "ext":"r8125, tg3"}  
+  - {"platform":"DS3622xs+", "version":"7.0.1-42218", "repository": "jumkey_develop", "ext":"r8125, tg3"}  
   - {"platform":"DS3622xs+", "version":"7.0.1-42218", "vid":"0x0525", "pid":"0xa4a5"}  
   - {"platform":"DS3622xs+", "version":"7.0.1-42218", "diskidxmap":"00", "sataportmap":"6", "ext":"r8125"}  
   - {"platform":"DS3622xs+", "version":"7.0.1-42218", "maxdisks":"16", "maxlanport":"7", "ext":"r8125"}  
   - {  
       "platform":"DS3622xs+",  
       "version":"7.0.1-42218",  
-      "jun":"1",  
-      "exp": "jumkey",  
+      "repository": "jumkey_develop",  
       "netif_num":"3",  
       "ext":"r8125, r8168, e1000e, igb, vmxnet3, ixgbe"  
     }  
@@ -136,5 +136,6 @@ jun              | ×    |"0"             | 仅7.0.1-42218 版本可以选择jun
 https://github.com/RedPill-TTG/redpill-load  
 https://github.com/jumkey/redpill-load  
 https://github.com/pocopico/redpill-load  
+https://github.com/PeterSuh-Q3/redpill-load  
 https://github.com/Online24Hours/Redpill_Build  
 

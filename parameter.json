@@ -7,6 +7,20 @@
         "default": "",
         "type": "string"
     },
+    "repository": {
+        "name": "repository",
+        "description": "请选择编译依赖的基础库.(pocopico_develop 以外均为默认jun模式)",
+        "detailedinfo": "请选择编译依赖的基础库.型号和版本均已库支持为准.",
+        "required": true,
+        "default": "pocopico",
+        "type": "choice",
+        "options": [
+            "pocopico_develop",
+            "pocopico_jun",
+            "jumkey_develop",
+            "PeterSuh-Q3_master"
+        ]
+    },
     "platform": {
         "name": "platform",
         "description": "请选择你需要编译的型号.",
@@ -42,6 +56,19 @@
             "7.1.0-42661",
             "7.0.1-42218",
             "6.2.4-25556"
+        ]
+    },
+    "lkm": {
+        "name": "lkm",
+        "description": "如不了解请保持默认, 请选择 LKM 版本.(目前具体有何区别不详)",
+        "detailedinfo": "请选择 LKM 版本",
+        "required": false,
+        "default": "redpill",
+        "type": "choice",
+        "options": [
+            "redpill",
+            "redpilldev",
+            "redpillprod"
         ]
     },
     "config": {
@@ -171,29 +198,5 @@
         "required": false,
         "default": "",
         "type": "string"
-    },
-    "exp": {
-        "name": "exp",
-        "description": "请选择编译依赖的基础库.",
-        "detailedinfo": "7.0/jun 优先选 jumkey.",
-        "required": true,
-        "default": "pocopico",
-        "type": "choice",
-        "options": [
-            "pocopico",
-            "jumkey"
-        ]
-    },
-    "jun": {
-        "name": "jun",
-        "description": "请选择是否jun模式编译. (仅7.0.1-42218 版本可选, jun模式 支持在线升级, 非jun模式不支持升级.)",
-        "detailedinfo": "仅7.0.1-42218 版本可选, jun模式 支持在线升级, 非jun模式不支持升级.",
-        "required": true,
-        "default": "0",
-        "type": "choice",
-        "options": [
-            "0",
-            "1"
-        ]
     }
 }
