@@ -89,39 +89,47 @@ ext              | ×    |-               | 请输入需要集成的扩展, 多�
 
 ## 举例
 * 普通参数示例:
-  - {"platform":"DS3622xs+", "version":"7.0.1-42218", "ext":"r8125, tg3"}  
-  - {"platform":"DS3622xs+", "version":"7.0.1-42218", "repository": "jumkey_develop", "ext":"r8125, tg3"}  
-  - {"platform":"DS3622xs+", "version":"7.0.1-42218", "vid":"0x0525", "pid":"0xa4a5"}  
-  - {"platform":"DS3622xs+", "version":"7.0.1-42218", "diskidxmap":"00", "sataportmap":"6", "ext":"r8125"}  
-  - {"platform":"DS3622xs+", "version":"7.0.1-42218", "maxdisks":"16", "maxlanport":"7", "ext":"r8125"}  
+  - {"repository":"pocopico_develop", "platform":"DS3622xs+", "version":"7.0.1-42218", "lkm":"redpill", "ext":"r8125, tg3"}  
+  - {"repository": "jumkey_develop", "platform":"DS3622xs+", "version":"7.0.1-42218", "lkm":"redpill", "ext":"r8125, tg3"}  
+  - {"repository":"pocopico_develop", "platform":"DS3622xs+", "version":"7.0.1-42218", "lkm":"redpill", "vid":"0x0525", "pid":"0xa4a5"}  
+  - {"repository":"pocopico_develop", "platform":"DS3622xs+", "version":"7.0.1-42218", "lkm":"redpill", "diskidxmap":"00", "sataportmap":"6", "ext":"r8125"}  
+  - {"repository":"pocopico_develop", "platform":"DS3622xs+", "version":"7.0.1-42218", "lkm":"redpill", "maxdisks":"16", "maxlanport":"7", "ext":"r8125"}  
   - {  
+      "repository":"pocopico_develop",  
       "platform":"DS3622xs+",  
       "version":"7.0.1-42218",  
-      "repository": "jumkey_develop",  
+      "lkm":"redpill",  
       "netif_num":"3",  
       "ext":"r8125, r8168, e1000e, igb, vmxnet3, ixgbe"  
     }  
-* dtb参数示例:
-  - {"platform":"DS920+",  
-      "version":"7.0.1-42218",  
-      "dtb": "https://github.com/wjz304/Redpill_CustomBuildfiles/9235785/ds920p.zip",  
-      "ext":"r8125"
-    }  
-* ext参数链接示例:
+* dtb参数示例:  
   - {  
+      "repository":"pocopico_develop",  
+      "platform":"DS920+",  
+      "version":"7.0.1-42218",  
+      "lkm":"redpill",  
+      "dtb": "https://github.com/wjz304/Redpill_CustomBuildfiles/9235785/ds920p.zip",  
+      "ext":"r8125"  
+    }  
+* ext参数链接示例:  
+  - {  
+      "repository":"pocopico_develop",  
       "platform":"DS3622xs+",  
       "version":"7.1.1-42962",  
+      "lkm":"redpill",  
       "ext":"r8125, e1000, e1000e, vmxnet3, https://raw.githubusercontent.com/wjz304/rp-ext/main/rtl8150/rpext-index.json"  
     }
-* config参数示例:
+* config参数示例:  
   - {  
+      "repository":"pocopico_develop",  
       "platform":"DS3622xs+",  
       "version":"7.0.1-42218",  
+      "lkm":"redpill",  
       "config":{"ramdisk_copy": {}},  
       "ext":"r8125, e1000, e1000e, vmxnet3"  
     }  
 * 高级自定义示例:
-  - {"platform":"DS3622xs+", "version":"7.0.1-42218", "jun":"1", "ext":"r8125,e1000e,vmxnet3"}  
+  - {"repository":"pocopico_develop", "platform":"DS3622xs+", "version":"7.0.1-42218", "lkm":"redpill", "ext":"r8125,e1000e,vmxnet3"}  
     \`\`\`  
     echo "${platform}"  
     \`\`\`  
