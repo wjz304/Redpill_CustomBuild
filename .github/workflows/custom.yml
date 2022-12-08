@@ -654,23 +654,26 @@ jobs:
 
               dat = []
               if '${{ env.sn }}' == '' or '${{ env.mac }}' == '':
-                  try:
-                      import wget
-                  except ModuleNotFoundError:
-                      os.system('pip3 install wget')
-                      import wget
-                  res = wget.download('https://raw.githubusercontent.com/pocopico/tinycore-redpill/main/serialnumbergen.sh', out='serialnumbergen.sh')
-                  os.system('sed -i "s|DS3622xsp|DS3622xs+|g" serialnumbergen.sh')
-                  os.system('sed -i "s|echo.*\$(generateMacAddress)|echo \$(generateMacAddress)|g" serialnumbergen.sh')
-                  os.system('sed -i "s|echo.*\$(generateSerial \$1)|echo \$(generateSerial \$1)|g" serialnumbergen.sh')
+                  # try:
+                  #     import wget
+                  # except ModuleNotFoundError:
+                  #     os.system('pip3 install wget')
+                  #     import wget
+                  # res = wget.download('https://raw.githubusercontent.com/pocopico/tinycore-redpill/main/serialnumbergen.sh', out='serialnumbergen.sh')
+                  # os.system('sed -i "s|DS3622xsp|DS3622xs+|g" serialnumbergen.sh')
+                  # os.system('sed -i "s|echo.*\$(generateMacAddress)|echo \$(generateMacAddress)|g" serialnumbergen.sh')
+                  # os.system('sed -i "s|echo.*\$(generateSerial \$1)|echo \$(generateSerial \$1)|g" serialnumbergen.sh')
+                  # platform = '${{ env.platform }}'
+                  # if platform == 'DS923+': platform = 'DS920+'         # 当前不支持 DS923+    算号
+                  # if platform == 'DS1520+': platform = 'DS920+'        # 当前不支持 DS1520+   算号
+                  # if platform == 'DS1821+': platform = 'DS1621+'       # 当前不支持 DS1821+   算号
+                  # if platform == 'DS2422+': platform = 'DS1621+'       # 当前不支持 DS2422+   算号
+                  # if platform == 'FS2500': platform = 'DS1621+'        # 当前不支持 FS2500    算号
+                  # if platform == 'FS3600': platform = 'DS3622xs+'      # 当前不支持 FS3600    算号
+                  # if platform == 'RS4021xs+': platform = 'DS3622xs+'   # 当前不支持 RS4021xs+ 算号
+                  # dat = os.popen('bash ./serialnumbergen.sh {}'.format(platform)).readlines()
+
                   platform = '${{ env.platform }}'
-                  if platform == 'DS923+': platform = 'DS920+'         # 当前不支持 DS923+    算号
-                  if platform == 'DS1520+': platform = 'DS920+'        # 当前不支持 DS1520+   算号
-                  if platform == 'DS1821+': platform = 'DS1621+'       # 当前不支持 DS1821+   算号
-                  if platform == 'DS2422+': platform = 'DS1621+'       # 当前不支持 DS2422+   算号
-                  if platform == 'FS2500': platform = 'DS1621+'        # 当前不支持 FS2500    算号
-                  if platform == 'FS3600': platform = 'DS3622xs+'      # 当前不支持 FS3600    算号
-                  if platform == 'RS4021xs+': platform = 'DS3622xs+'   # 当前不支持 RS4021xs+ 算号
                   dat = os.popen('bash ./serialnumbergen.sh {}'.format(platform)).readlines()
 
               if '${{ env.config }}' != '':
