@@ -246,11 +246,12 @@ jobs:
                       errinfo = 'version 参数错误, 当前仅支持 {}.'.format(', '.join(versions))
 
               if iscustom == 'true':
-                  lkms = {}
+                  lkms = []
                   with open('lkms.json', mode="r") as f:
                       keys = json.loads(f.read())['wjz304'][platform.replace('+', 'p').lower() + '_' + version.split('-')[-1]].keys()
                       lkms = [x for x in keys if not x.endswith('*') and not x.endswith('#')]
-                  
+                  if lkm == '':
+                      lkm = lkms[0]
                   if not lkm in lkms:
                       iscustom = 'false'
                       errinfo = 'lkm 参数错误, 当前仅支持 {}.'.format(', '.join(lkms))
@@ -746,11 +747,11 @@ jobs:
             pwd
             cd ./cache
             curl -L ${paturl} -o ds.pat
-            if [ "${platform}" == "DVA1622" -o "${platform}" == "DS923+" ]; then
+            # if [ "${platform}" == "DVA1622" -o "${platform}" == "DS923+" ]; then
               curl -L https://global.download.synology.com/download/DSM/release/7.0.1/42218/DSM_DS3622xs%2B_42218.pat -o oldpat.tar.gz
-            else
-              curl -L https://global.download.synology.com/download/DSM/release/7.0.1/42218/DSM_${platform/+/%2B}_42218.pat -o oldpat.tar.gz
-            fi
+            # else
+            #   curl -L https://global.download.synology.com/download/DSM/release/7.0.1/42218/DSM_${platform/+/%2B}_42218.pat -o oldpat.tar.gz
+            # fi
             mkdir synoesp && tar -C./synoesp/ -xf oldpat.tar.gz rd.gz
             cd synoesp
             xz -dc < rd.gz >rd 2>/dev/null || echo "extract rd.gz"
