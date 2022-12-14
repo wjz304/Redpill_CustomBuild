@@ -19,6 +19,10 @@ function beginArray() {
         permanent="SBR"
         serialstart="2030 2040 20C0 2150"
         ;;
+    DS1520+)
+        permanent="TRR"
+        serialstart="2270"
+        ;;
     DS1621+)
         permanent="S7R"
         serialstart="2080"
@@ -117,6 +121,9 @@ function generateSerial() {
     DS923+)
         serialnum=$(toupper "$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
         ;;
+    DS1520+)
+        serialnum=$(toupper "$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
+        ;;
     DS1621+)
         serialnum=$(toupper "$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
         ;;
@@ -166,7 +173,7 @@ Usage: ${0} <platform>
 
 Available platforms :
 ----------------------------------------------------------------------------------------
-DS916+ DS918+ DS920+ DS923+ DS1621+ DS2422+ DS3615xs DS3617xs DS3622xs+ DVA1622 DVA3219 DVA3221 FS6400 RS4021xs+
+DS916+ DS918+ DS920+ DS923+ DS1520+ DS1621+ DS2422+ DS3615xs DS3617xs DS3622xs+ DVA1622 DVA3219 DVA3221 FS6400 RS4021xs+
 
 e.g. $(basename ${0}) DS3615xs
 ----------------------------------------------------------------------------------------
