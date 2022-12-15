@@ -5,18 +5,18 @@
 
 
 
-Options Ranked | 1a | 1b | 2a | 2b | 2c | 3a | 3b  
+选项 | 1a | 1b | 2a | 2b | 2c | 3a | 3b  
 -|-|-|-|-|-|-|-   
-DSM Platform | DS918+ | DS3622xs+ | DS920+ | DS1621+ | DS3617xs | DVA3221 | DS3615xs  
+DSM 型号 | DS918+ | DS3622xs+ | DS920+ | DS1621+ | DS3617xs | DVA3221 | DS3615xs  
 Architecture | apollolake | broadwellnk | geminilake | v1000 | broadwell | denverton | bromolow  
-DSM Versions | 7.0.1-7.1.0-42661 | 7.0.1-7.1.0-42661 | 7.0.1-7.1.0-42661 | 7.0.1-7.1.0-42661 | 7.0.1-7.1.0-42661 | 7.0.1-7.1.0-42661 | 7.0.1-7.1.0-42661  
-Drive Slot Mapping | sataportmap/diskidxmap | sataportmap/diskidxmap | device tree | device tree | sataportmap/diskidxmap | sataportmap/diskidxmap | ataportmap/diskidxmap  
-QuickSync Transcoding | Yes | No | Yes | No | No | No | No  
-NVMe Cache Support | Yes | Yes | Yes | Yes | Yes (as of 7.0) | Yes | No  
-RAIDF1 Support | No | Yes | No | No | Yes | No | Yes  
-Oldest CPU Supported | Haswell * | any x86-64 | Haswell * | any x86-64 | any x86-64 | Haswell * | any x86-64  
-Max CPU Threads | 8 | 24 | 8 | 16 | 24 (as of 7.0) | 16 | 16  
-Key Note | 适合大多数用户 | 适合大型环境安装 | 需要了解dts | AMD Ryzen, 需要了解dts | 过时(建议使用DS3622xs+)  | AI/深度学习 nVIDIA GPU | 过时(建议使用DS3622xs+)  
+DSM 版本 | 7.0.1-7.1.0-42661 | 7.0.1-7.1.0-42661 | 7.0.1-7.1.0-42661 | 7.0.1-7.1.0-42661 | 7.0.1-7.1.0-42661 | 7.0.1-7.1.0-42661 | 7.0.1-7.1.0-42661  
+驱动器映射 | sataportmap/diskidxmap | sataportmap/diskidxmap | device tree | device tree | sataportmap/diskidxmap | sataportmap/diskidxmap | ataportmap/diskidxmap  
+QuickSync 转码 | Yes | No | Yes | No | No | No | No  
+NVMe 缓存支持 | Yes | Yes | Yes | Yes | Yes (as of 7.0) | Yes | No  
+RAIDF1 支持 | No | Yes | No | No | Yes | No | Yes  
+最低 CPU 支持 | Haswell * | any x86-64 | Haswell * | any x86-64 | any x86-64 | Haswell * | any x86-64  
+最大 CPU 线程 | 8 | 24 | 8 | 16 | 24 (as of 7.0) | 16 | 16  
+注意事项 | 适合大多数用户 | 适合大型环境安装 | 需要了解dts | AMD Ryzen, 需要了解dts | 过时(建议使用DS3622xs+)  | AI/深度学习 nVIDIA GPU | 过时(建议使用DS3622xs+)  
 
 
 * \* 需要 FMA3 指令支持。所有 Haswell Core 处理器(4代)或更高版本都支持它; Pentiums/Celerons(J系列的 CPUs 除外) 很少支持. Piledriver 是与 Intel Haswell 相当的最低 AMD CPU 架构.

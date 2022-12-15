@@ -242,6 +242,12 @@ jobs:
           sudo rm -rf redpill-load_PeterSuh-Q3_master
           git clone --branch master https://github.com/PeterSuh-Q3/redpill-load.git redpill-load_PeterSuh-Q3_master
 
+          sudo rm -rf redpill-load_wjz304_test-dev
+          git clone --branch test-dev https://github.com/wjz304/redpill-load.git redpill-load_wjz304_test-dev
+
+          sudo rm -rf redpill-load_wjz304_test-jun
+          git clone --branch test-jun https://github.com/wjz304/redpill-load.git redpill-load_wjz304_test-jun
+
       - name: Get loads lsit
         shell: python
         run: |
@@ -293,6 +299,12 @@ jobs:
 
               print('################## PeterSuh-Q3_master ##################')
               loads["PeterSuh-Q3_master"] = getloadlist('redpill-load_PeterSuh-Q3_master')
+
+              print('################## wjz304_test-dev ##################')
+              loads["wjz304_test-dev"] = getloadlist('redpill-load_wjz304_test-dev')
+
+              print('################## wjz304_test-jun ##################')
+              loads["wjz304_test-jun"] = getloadlist('redpill-load_wjz304_test-jun')
 
               if len(loads) > 0:
                   print('#######################  loads   #######################')
