@@ -933,8 +933,9 @@ jobs:
                 echo "=====================Add redpill-dtb-static====================="
                 ./ext-manager.sh add ${lkmext}/redpill-dtb-static/rpext-index.json
                 ./ext-manager.sh _update_platform_exts ${synoplatform}_${synoversion} redpill-dtb-static
+                # dtbextfile="$(find custom -name model_${synoplatform}.dtb)"
+                dtbextfile="custom/extensions/redpill-dtb-static/${synoplatform}_${synoversion}/model_${synoplatform}.dtb"
                 dtbuserfile="${{ env.dtb }}"
-                dtbextfile="$(find custom -name model_${synoplatform}.dtb)"
                 echo Copying ${dtbuserfile} to ${dtbextfile} ...
                 sudo cp ${dtbuserfile} ${dtbextfile}
               fi
