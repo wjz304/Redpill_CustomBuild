@@ -228,13 +228,9 @@ jobs:
         run: |
           sudo rm -rf redpill-load_pocopico_develop
           git clone --branch develop https://github.com/pocopico/redpill-load.git redpill-load_pocopico_develop
-          # https://github.com/pocopico/rp-ext/blob/main/redpill/rpext-index.json 并不包含 DS3617xs/6.2.4-25556, 线上无法获取
-          rm -rf redpill-load_pocopico_develop/config/DS3617xs/6.2.4-25556
 
           sudo rm -rf redpill-load_pocopico_jun
           git clone --branch jun https://github.com/pocopico/redpill-load.git redpill-load_pocopico_jun
-          # https://github.com/pocopico/rp-ext/blob/main/redpill/rpext-index.json 并不包含 DS3617xs/6.2.4-25556, 线上无法获取
-          rm -rf redpill-load_pocopico_jun/config/DS3617xs/6.2.4-25556
 
           sudo rm -rf redpill-load_jumkey_develop
           git clone --branch develop https://github.com/jumkey/redpill-load.git redpill-load_jumkey_develop
@@ -256,7 +252,7 @@ jobs:
 
           root = '' # os.path.dirname(os.path.abspath(__file__))
 
-          def getloadlist(work = 'redpill-load'):
+          def getloadlist(work = 'redpill-load', ignore=[]):
               load = {}
               try:
                   lkms = {}
@@ -274,6 +270,8 @@ jobs:
                           versions.sort()
                           print(versions)
                           for version in versions:
+                              if version in ignore:
+                                  continue
                               if os.path.exists(os.path.join(root, work, 'config', platform, version, 'config.json')):
                                   key = platform.replace('+', 'p').lower() + '_' + version.split('-')[-1]
                                   if key in lkms:
@@ -288,23 +286,25 @@ jobs:
 
           if __name__ == '__main__':
               loads = {}
+              ignore=['7.0-41222', '7.0-41890', '7.1.0-42550', '7.1.0-42621', '7.1.1-42951']
+
               print('################### pocopico_develop ###################')
-              loads["pocopico_develop"] = getloadlist('redpill-load_pocopico_develop')
+              loads["pocopico_develop"] = getloadlist('redpill-load_pocopico_develop', ignore)
 
               print('##################### pocopico_jun #####################')
-              loads["pocopico_jun"] = getloadlist('redpill-load_pocopico_jun')
+              loads["pocopico_jun"] = getloadlist('redpill-load_pocopico_jun', ignore)
 
               print('#################### jumkey_develop ####################')
-              loads["jumkey_develop"] = getloadlist('redpill-load_jumkey_develop')
+              loads["jumkey_develop"] = getloadlist('redpill-load_jumkey_develop', ignore)
 
               print('################## PeterSuh-Q3_master ##################')
-              loads["PeterSuh-Q3_master"] = getloadlist('redpill-load_PeterSuh-Q3_master')
+              loads["PeterSuh-Q3_master"] = getloadlist('redpill-load_PeterSuh-Q3_master', ignore)
 
               print('################## wjz304_test-dev ##################')
-              loads["wjz304_test-dev"] = getloadlist('redpill-load_wjz304_test-dev')
+              loads["wjz304_test-dev"] = getloadlist('redpill-load_wjz304_test-dev', ignore)
 
               print('################## wjz304_test-jun ##################')
-              loads["wjz304_test-jun"] = getloadlist('redpill-load_wjz304_test-jun')
+              loads["wjz304_test-jun"] = getloadlist('redpill-load_wjz304_test-jun', ignore)
 
               if len(loads) > 0:
                   print('#######################  loads   #######################')
