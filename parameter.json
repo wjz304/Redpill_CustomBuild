@@ -10,7 +10,7 @@
     "repository": {
         "name": "repository",
         "description": "请选择编译依赖的基础库.(pocopico_develop 以外均为默认jun模式)",
-        "detailedinfo": "请选择编译依赖的基础库.型号和版本均已库支持为准.",
+        "detailedinfo": "请选择编译依赖的基础库.型号和版本均已库支持为准.\nwjz304_test*仅用于编译测试, 请勿选.",
         "required": true,
         "default": "pocopico",
         "type": "choice",
