@@ -885,7 +885,7 @@ jobs:
             sed -i 's/a72076b1a5c148e775e9542916e2f07fe18d8676dc7396ed69355a9a0a38b36c/7afca3970ac7324d7431c1484d4249939bedd4c18ac34187f894c43119edf3a1/g' redpill-load/config/RS4021xs+/7.0.1-42218/config.json
           fi
 
-          if [ ${repo} == 'jumkey' -a ${branch} == 'jun' ]; then 
+          if [ ${repo} == 'jumkey' -a ${branch} == 'develop' ]; then 
             # 容错
             sed -i 's|file://localhost/root/DSM_DS923%2B_42962.pat|https://global.download.synology.com/download/DSM/release/7.1.1/42962/DSM_DS923%2B_42962.pat|g' redpill-load/config/DS923+/7.1.1-42962/config.json
             sed -i 's|a2bcfae34eda13f65bc7ee453b63bab982e2db9891a680968bc24ef5035ae8d8|e33b47df446ce0bd99c5613767c9dba977915e25acfb5ccb9f5650b14459458f|g' redpill-load/config/DS923+/7.1.1-42962/config.json
