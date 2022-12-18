@@ -882,6 +882,7 @@ jobs:
 
           if [ ${repo} == 'pocopico' -a ${branch} == 'jun' ]; then 
             # 容错
+            sed -i 's/global.synology.com/global.download.synology.com/g' redpill-load/config/RS4021xs+/7.0.1-42218/config.json
             sed -i 's/a72076b1a5c148e775e9542916e2f07fe18d8676dc7396ed69355a9a0a38b36c/7afca3970ac7324d7431c1484d4249939bedd4c18ac34187f894c43119edf3a1/g' redpill-load/config/RS4021xs+/7.0.1-42218/config.json
           fi
 
