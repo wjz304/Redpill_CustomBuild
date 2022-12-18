@@ -875,6 +875,11 @@ jobs:
             sed -i 's/DSM_ds1520p_42962.pat/DSM_DS1520%2B_42962.pat/g' redpill-load/config/DS1520+/7.1.1-42962/config.json
           fi
 
+          if [ ${repo} == 'PeterSuh-Q3' -a ${branch} == 'master' ]; then 
+            # 容错
+            sed -i 's/DSM_ds1520p_42962.pat/DSM_DS1520%2B_42962.pat/g' redpill-load/config/DS1520+/7.1.1-42962/config.json
+          fi
+
           if [ ${repo} == 'pocopico' -a ${branch} == 'jun' ]; then 
             # 容错
             sed -i 's/a72076b1a5c148e775e9542916e2f07fe18d8676dc7396ed69355a9a0a38b36c/7afca3970ac7324d7431c1484d4249939bedd4c18ac34187f894c43119edf3a1/g' redpill-load/config/RS4021xs+/7.0.1-42218/config.json
