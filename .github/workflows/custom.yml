@@ -885,6 +885,7 @@ jobs:
             sed -i 's/global.synology.com/global.download.synology.com/g' redpill-load/config/RS4021xs+/7.0.1-42218/config.json
             sed -i 's/a72076b1a5c148e775e9542916e2f07fe18d8676dc7396ed69355a9a0a38b36c/7afca3970ac7324d7431c1484d4249939bedd4c18ac34187f894c43119edf3a1/g' redpill-load/config/RS4021xs+/7.0.1-42218/config.json
             sed -i 's/17607e1739c8acc9903272ebd981bccb27b51057cdcb3cc446e5c5149db452d3/b4cc62e9953f226960de98b65887e17dd6df5fa0ad28f665e0b4660dbd5f2fa8/g' redpill-load/config/RS4021xs+/7.0.1-42218/config.json
+            sed -i 's/3aa9d810064747fca6d0a3ab4c979bd82b49fc0d166dfe714261c2a22145cc70/3510afe5b3dfe3662bfe054c1728c8794911da431718b533cd03d2a2c061ffd5/g' redpill-load/config/RS4021xs+/7.0.1-42218/config.json
           fi
 
           if [ ${repo} == 'jumkey' -a ${branch} == 'develop' ]; then 
