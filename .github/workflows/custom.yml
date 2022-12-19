@@ -873,6 +873,8 @@ jobs:
           if [ ${repo} == 'pocopico' -a ${branch} == 'develop' ]; then 
             # 容错
             sed -i 's/DSM_ds1520p_42962.pat/DSM_DS1520%2B_42962.pat/g' redpill-load/config/DS1520+/7.1.1-42962/config.json
+            sed -i 's/856331415d6980d9ef03a75eae4b9c5c927d1083266e1d7038ad8c62fbc2d570/625daf8507141d055b60b9e5ffd633cde1302d68387d611ac97a98a92f820501/g' redpill-load/redpill-misc/recipes/universal.json
+
           fi
 
           if [ ${repo} == 'PeterSuh-Q3' -a ${branch} == 'master' ]; then 
