@@ -1,5 +1,19 @@
 ```diff 
 + 注意事项:
+- pocopico_develop 现在全型号编不过, 且该错误在下游无法容错, 我已经PR了, 非要用pocopico_develop暂时可通过dev模式编译 !!!
+- pocopico_develop 现在全型号编不过, 且该错误在下游无法容错, 我已经PR了, 非要用pocopico_develop暂时可通过dev模式编译 !!!
+- pocopico_develop 现在全型号编不过, 且该错误在下游无法容错, 我已经PR了, 非要用pocopico_develop暂时可通过dev模式编译 !!!
+- pocopico_develop 现在全型号编不过, 且该错误在下游无法容错, 我已经PR了, 非要用pocopico_develop暂时可通过dev模式编译 !!!
+- pocopico_develop 现在全型号编不过, 且该错误在下游无法容错, 我已经PR了, 非要用pocopico_develop暂时可通过dev模式编译 !!!
+- pocopico_develop 现在全型号编不过, 且该错误在下游无法容错, 我已经PR了, 非要用pocopico_develop暂时可通过dev模式编译 !!!
+- pocopico_develop 现在全型号编不过, 且该错误在下游无法容错, 我已经PR了, 非要用pocopico_develop暂时可通过dev模式编译 !!!
+- pocopico_develop 现在全型号编不过, 且该错误在下游无法容错, 我已经PR了, 非要用pocopico_develop暂时可通过dev模式编译 !!!
+- pocopico_develop 现在全型号编不过, 且该错误在下游无法容错, 我已经PR了, 非要用pocopico_develop暂时可通过dev模式编译 !!!
+- pocopico_develop 现在全型号编不过, 且该错误在下游无法容错, 我已经PR了, 非要用pocopico_develop暂时可通过dev模式编译 !!!
+- pocopico_develop 现在全型号编不过, 且该错误在下游无法容错, 我已经PR了, 非要用pocopico_develop暂时可通过dev模式编译 !!!
+- pocopico_develop 现在全型号编不过, 且该错误在下游无法容错, 我已经PR了, 非要用pocopico_develop暂时可通过dev模式编译 !!!
+- pocopico_develop 现在全型号编不过, 且该错误在下游无法容错, 我已经PR了, 非要用pocopico_develop暂时可通过dev模式编译 !!!
+-
 - 现在型号和版本号均为根据基础库自动拉取.
 - jun编译尽量选择jumkey的库, 新型号可选择PeterSuh-Q3库.
 - dtb 没有制作就不要写, 不要再只填个 .zip, 或者复制示例的地址了. 四盘位以下可尝试不填写, 将自动编译, 更多信息参考 Issues页的置顶Issue.
